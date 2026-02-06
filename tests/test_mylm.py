@@ -1,5 +1,7 @@
-import pytest
 import numpy as np
+import pytest
+import dstools_dtdy.linear_model as lm
+
 
 def test_shapes_with_intercept_default():
     rng = np.random.default_rng(1)
@@ -7,14 +9,11 @@ def test_shapes_with_intercept_default():
     X = rng.normal(size=(n, p))
     y = X @ np.array([1, 2]) + 1 + rng.normal(size=n)
 
-    fit = mylm(X, y)  # intercept included by default
+    fit = lm.mylm(X, y)  # intercept included by default
 
-    # coefficients should be length p+1
-    assert coef(fit).shape == (p + 1,)
-
-    # fitted values and residuals should be length n
-    assert fitted_values(fit).shape == (n,)
-    assert residuals(fit).shape == (n,)
+    assert lm.coef(fit).shape == (p + 1,)
+    assert lm.fitted_values(fit).shape == (n,)
+    assert lm.residuals(fit).shape == (n,)
 
 
 def test_shapes_without_intercept():
@@ -24,13 +23,11 @@ def test_shapes_without_intercept():
     beta = np.array([0.5, -1.0, 2.0])
     y = X @ beta + rng.normal(size=n)
 
-    fit = mylm(X, y, add_intercept=False)
+    fit = lm.mylm(X, y, add_intercept=False)
 
-    # coefficients should be length p (no intercept)
-    assert coef(fit).shape == (p,)
-
-    assert fitted_values(fit).shape == (n,)
-    assert residuals(fit).shape == (n,)
+    assert lm.coef(fit).shape == (p,)
+    assert lm.fitted_values(fit).shape == (n,)
+    assert lm.residuals(fit).shape == (n,)
 
 
 def test_residual_identity():
@@ -39,12 +36,11 @@ def test_residual_identity():
     X = rng.normal(size=(n, p))
     y = rng.normal(size=n)
 
-    fit = mylm(X, y)  # default intercept
+    fit = lm.mylm(X, y)
 
-    # residuals approximately equal y - fitted_values
     np.testing.assert_allclose(
-        residuals(fit),
-        fit["y"] - fitted_values(fit),
+        lm.residuals(fit),
+        fit["y"] - lm.fitted_values(fit),
         rtol=1e-12,
         atol=1e-12,
     )
@@ -53,7 +49,7 @@ def test_residual_identity():
 def test_raises_on_mismatched_rows():
     rng = np.random.default_rng(5)
     X = rng.normal(size=(5, 2))
-    y = rng.normal(size=4)  # wrong length
+    y = rng.normal(size=4)
 
     with pytest.raises(ValueError):
-        mylm(X, y)
+        lm.mylm(X, y)
