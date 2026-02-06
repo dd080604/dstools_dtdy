@@ -1,5 +1,5 @@
 import pytest
-
+import numpy as np
 
 def test_shapes_with_intercept_default():
     rng = np.random.default_rng(1)
