@@ -1,37 +1,40 @@
 import numpy as np
 
-class MyModel:
-    def __init__(self, X, y):
-        self.X_raw = np.asarray(X)
-        self.y = np.asarray(y).reshape(-1)
+def mylm(X, y, add_intercept=True):
+    X = np.asarray(X)
+    y = np.asarray(y).reshape(-1)
 
-        if self.X_raw.ndim == 1:
-            self.X_raw = self.X_raw.reshape(-1, 1)
+    if X.ndim == 1:
+      X = X.reshape(-1, 1)
 
-        self.beta_hat = None
-        self.add_intercept = None
-        self.X_design = None
+    if X.shape[0] != y.shape[0]:
+      raise ValueError("X and y must have the same number of rows/observations.")
 
-    def mylm(self, add_intercept=True):
-        X = self.X_raw
-        y = self.y
-        self.add_intercept = add_intercept
+    if add_intercept:
+      intercept = np.ones((X.shape[0], 1))
+      Xd = np.concatenate((intercept, X), axis=1)
+    else:
+      Xd = X
 
-        if add_intercept:
-            intercept = np.ones((X.shape[0], 1))
-            Xd = np.concatenate((intercept, X), axis=1)
-        else:
-            Xd = X
-        self.X_design = Xd
+    beta_hat = np.linalg.inv(Xd.T @ Xd) @ Xd.T @ y
+    y_hat = Xd @ beta_hat
+    resid = y - y_hat
 
-        self.beta_hat = np.linalg.inv(Xd.T @ Xd) @ Xd.T @ y
-        return self.beta_hat
+    fit = {
+        "beta_hat": beta_hat,
+        "X_design": Xd, 
+        "y": y,
+        "fitted_values": y_hat,
+        "residuals": resid,
+    }
+    return fit
 
-    def fitted_values(self):
-        return self.X_design @ self.beta_hat
 
-    def residuals(self):
-        return self.y - self.fitted_values()
+def coef(fit):
+    return fit["beta_hat"]
 
-    def coef(self): 
-        return self.beta_hat     
+def fitted_values(fit):
+    return fit["fitted_values"]
+
+def residuals(fit):
+    return fit["residuals"]
