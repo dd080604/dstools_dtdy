@@ -18,3 +18,4 @@ print(coef(fit))
 print(fitted_values(fit))
 print(residuals(fit))
 ```
+Note: This is a class assignment; not intended for full scale production.
