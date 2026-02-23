@@ -1,19 +1,17 @@
 [build-system]
-requires = ["hatchling >= 1.26"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=64", "wheel", "Cython>=3.0", "numpy"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "dstools_dtdy"
 version = "0.0.1"
-authors = [
-  { name="Dylan Day"},
-]
+authors = [{ name="Dylan Day"}]
 description = "A small package for fitting a linear model"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
 ]
 
 [project.urls]
