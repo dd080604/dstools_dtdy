@@ -1,6 +1,9 @@
+# benchmark.py (or simulation.py)
+
 import time
 import numpy as np
 from dstools_dtdy import mylm
+
 
 def time_engine(n, p, engine, repeats=5, seed=0):
     rng = np.random.default_rng(seed)
@@ -14,15 +17,47 @@ def time_engine(n, p, engine, repeats=5, seed=0):
         mylm(X, y, engine=engine)
         times.append(time.perf_counter() - t0)
 
-    return float(np.mean(times)), float(np.std(times, ddof=1))
+    times = np.asarray(times)
+    return times.mean(), times.std(ddof=1)
 
-settings = [(200, 5), (500, 10), (1000, 20), (2000, 30)]
-rows = []
-for n, p in settings:
-    mean_np, sd_np = time_engine(n, p, "numpy")
-    mean_cy, sd_cy = time_engine(n, p, "cython")
-    speedup = mean_np / mean_cy
-    rows.append((n, p, mean_np, sd_np, mean_cy, sd_cy, speedup))
 
-for r in rows:
-    print(r)
+def run_benchmark():
+    settings = [
+        (200, 5),
+        (500, 10),
+        (1000, 20),
+        (2000, 30),
+    ]
+
+    rows = []
+
+    for n, p in settings:
+        mean_np, sd_np = time_engine(n, p, "numpy")
+        mean_cy, sd_cy = time_engine(n, p, "cython")
+
+        speedup = mean_np / mean_cy
+
+        rows.append((n, p, mean_np, sd_np, mean_cy, sd_cy, speedup))
+
+    print("\n=== Linear Model Benchmark ===\n")
+
+    header = (
+        f"{'n':>6} {'p':>6} | "
+        f"{'numpy_mean':>12} {'numpy_sd':>12} | "
+        f"{'cython_mean':>12} {'cython_sd':>12} | "
+        f"{'speedup':>10}"
+    )
+    print(header)
+    print("-" * len(header))
+
+    for n, p, mnp, snp, mcy, scy, sp in rows:
+        print(
+            f"{n:6d} {p:6d} | "
+            f"{mnp:12.6f} {snp:12.6f} | "
+            f"{mcy:12.6f} {scy:12.6f} | "
+            f"{sp:10.3f}"
+        )
+
+
+if __name__ == "__main__":
+    run_benchmark()
