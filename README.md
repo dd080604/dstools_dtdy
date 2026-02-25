@@ -18,4 +18,15 @@ print(coef(fit))
 print(fitted_values(fit))
 print(residuals(fit))
 ```
+
+## Cython Implementation
+
+### Comparison
+|    n |   p |   numpy_mean |   numpy_sd |   cython_mean |   cython_sd |   speedup |
+|-----:|----:|-------------:|-----------:|--------------:|------------:|----------:|
+|  200 |   5 |     6.8e-05  |    6.7e-05 |      0.000117 |     0.00017 |  0.577904 |
+|  500 |  10 |     5.8e-05  |    1.9e-05 |      9.9e-05  |     1.3e-05 |  0.586292 |
+| 1000 |  20 |     0.00016  |    8.2e-05 |      0.000575 |     1.3e-05 |  0.278836 |
+| 2000 |  30 |     0.000409 |    3.9e-05 |      0.002436 |     8.7e-05 |  0.167776 |
+
 Note: This is a class assignment; not intended for full scale production.
