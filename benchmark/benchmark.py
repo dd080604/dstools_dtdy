@@ -52,4 +52,4 @@ def run_benchmark():
 
 if __name__ == "__main__":
     df = run_benchmark()
-    print(df)
+    print(df.round(6).to_markdown(index=False))
