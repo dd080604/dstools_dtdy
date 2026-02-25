@@ -1,7 +1,8 @@
-# benchmark.py (or simulation.py)
+# benchmark.py
 
 import time
 import numpy as np
+import pandas as pd
 from dstools_dtdy import mylm
 
 
@@ -35,29 +36,20 @@ def run_benchmark():
         mean_np, sd_np = time_engine(n, p, "numpy")
         mean_cy, sd_cy = time_engine(n, p, "cython")
 
-        speedup = mean_np / mean_cy
+        rows.append({
+            "n": n,
+            "p": p,
+            "numpy_mean": mean_np,
+            "numpy_sd": sd_np,
+            "cython_mean": mean_cy,
+            "cython_sd": sd_cy,
+            "speedup": mean_np / mean_cy
+        })
 
-        rows.append((n, p, mean_np, sd_np, mean_cy, sd_cy, speedup))
-
-    print("\n=== Linear Model Benchmark ===\n")
-
-    header = (
-        f"{'n':>6} {'p':>6} | "
-        f"{'numpy_mean':>12} {'numpy_sd':>12} | "
-        f"{'cython_mean':>12} {'cython_sd':>12} | "
-        f"{'speedup':>10}"
-    )
-    print(header)
-    print("-" * len(header))
-
-    for n, p, mnp, snp, mcy, scy, sp in rows:
-        print(
-            f"{n:6d} {p:6d} | "
-            f"{mnp:12.6f} {snp:12.6f} | "
-            f"{mcy:12.6f} {scy:12.6f} | "
-            f"{sp:10.3f}"
-        )
+    df = pd.DataFrame(rows)
+    return df
 
 
 if __name__ == "__main__":
-    run_benchmark()
+    df = run_benchmark()
+    df
