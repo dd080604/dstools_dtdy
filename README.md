@@ -3,7 +3,11 @@
 Package for fitting a least-squares linear model using the closed-form normal equation:
 $\hat{\beta} = (X^\top X)^{-1}X^\top y$
 
-## Example 
+Newest update includes:
+* Cython implementation of `mylm()`
+* k-fold CV functionality that returns per-fold MSEs and mean MSE.
+
+## General Example 
 ```
 from dstools_dtdy import mylm, coef, fitted_values, residuals 
 import numpy as np
@@ -12,16 +16,19 @@ rng = np.random.default_rng(1)
 X = rng.normal(size=(5, 2))
 y = X @ np.array([1, 2]) + 1 + rng.normal(size=5)
 
-fit = mylm(X, y)
+fit = mylm(X, y, engine="numpy") # Or engine="cython"
 
 print(coef(fit))
 print(fitted_values(fit))
 print(residuals(fit))
 ```
+## K-fold CV Example
 
-## Cython Implementation
 
-### Comparison
+
+## Cython Comparison
+
+
 |    n |   p |   numpy_mean |   numpy_sd |   cython_mean |   cython_sd |   speedup |
 |-----:|----:|-------------:|-----------:|--------------:|------------:|----------:|
 |  200 |   5 |     6.8e-05  |    6.7e-05 |      0.000117 |     0.00017 |  0.577904 |
