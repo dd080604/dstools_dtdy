@@ -5,7 +5,7 @@ $\hat{\beta} = (X^\top X)^{-1}X^\top y$
 
 Newest update includes:
 * Cython implementation of `mylm()`
-* k-fold CV functionality that returns per-fold MSEs and mean MSE.
+* `cv_mylm()`: k-fold CV functionality that returns per-fold MSEs and mean MSE.
 
 ## General Example 
 ```
@@ -24,7 +24,17 @@ print(residuals(fit))
 ```
 ## K-fold CV Example
 
+```
+from dstools_dtdy import cv_mylm
+import numpy
 
+rng = np.random.default_rng(1)
+X = rng.normal(size=(5, 2))
+y = X @ np.array([1, 2]) + 1 + rng.normal(size=5)
+cv_mylm(X, y, k=5, add_intercept=True, engine="numpy", shuffle=True, random_state=42) # Or engine="cython"
+
+# Returns (per-fold MSEs, mean MSE)
+```
 
 ## Cython Comparison
 
