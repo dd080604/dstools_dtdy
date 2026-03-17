@@ -1,5 +1,5 @@
 from setuptools import setup, Extension
-from setuptools.command.build_py import build_py
+from setuptools.command.build_ext import build_ext
 from Cython.Build import cythonize
 import numpy as np
 import os
@@ -7,10 +7,10 @@ import subprocess
 import sys
 
 
-class CustomBuildPy(build_py):
+class CustomBuildExt(build_ext):
     def run(self):
-        self.build_qr_shared_library()
         super().run()
+        self.build_qr_shared_library()
 
     def build_qr_shared_library(self):
         root = os.path.abspath(os.path.dirname(__file__))
@@ -21,18 +21,15 @@ class CustomBuildPy(build_py):
         if not os.path.exists(c_file):
             raise FileNotFoundError(f"Could not find {c_file}")
 
-        if sys.platform.startswith("linux") or sys.platform == "darwin":
-            cmd = [
-                "gcc",
-                "-shared",
-                "-fPIC",
-                "-O2",
-                "-o",
-                so_file,
-                c_file,
-            ]
-        else:
-            raise RuntimeError("Automatic qr.so build is only configured here for Linux/macOS.")
+        cmd = [
+            "gcc",
+            "-shared",
+            "-fPIC",
+            "-O2",
+            "-o",
+            so_file,
+            c_file,
+        ]
 
         print("Building qr.so with command:")
         print(" ".join(cmd))
@@ -52,5 +49,5 @@ extensions = [
 
 setup(
     ext_modules=cythonize(extensions, language_level="3"),
-    cmdclass={"build_py": CustomBuildPy},
+    cmdclass={"build_ext": CustomBuildExt},
 )
