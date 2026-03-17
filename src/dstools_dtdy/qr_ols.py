@@ -1,3 +1,5 @@
+import numpy as np
+
 def my_lm_QR(X, y, add_intercept=True):
 
     X = np.asarray(X)
