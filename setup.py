@@ -1,5 +1,5 @@
 from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext
+from setuptools.command.build_py import build_py
 from Cython.Build import cythonize
 import numpy as np
 import os
@@ -7,21 +7,21 @@ import subprocess
 import sys
 
 
-class CustomBuildExt(build_ext):
+class CustomBuildPy(build_py):
     def run(self):
-        super().run()
         self.build_qr_shared_library()
+        super().run()
 
     def build_qr_shared_library(self):
-        src_dir = os.path.join(os.path.dirname(__file__), "src", "dstools_dtdy")
+        root = os.path.abspath(os.path.dirname(__file__))
+        src_dir = os.path.join(root, "src", "dstools_dtdy")
         c_file = os.path.join(src_dir, "qr.c")
         so_file = os.path.join(src_dir, "qr.so")
 
         if not os.path.exists(c_file):
             raise FileNotFoundError(f"Could not find {c_file}")
 
-        # Linux / Colab
-        if sys.platform.startswith("linux"):
+        if sys.platform.startswith("linux") or sys.platform == "darwin":
             cmd = [
                 "gcc",
                 "-shared",
@@ -32,13 +32,14 @@ class CustomBuildExt(build_ext):
                 c_file,
             ]
         else:
-            raise RuntimeError(
-                "Automatic qr.so build in setup.py is currently configured for Linux/macOS only."
-            )
+            raise RuntimeError("Automatic qr.so build is only configured here for Linux/macOS.")
 
         print("Building qr.so with command:")
         print(" ".join(cmd))
         subprocess.check_call(cmd)
+
+        if not os.path.exists(so_file):
+            raise RuntimeError(f"Failed to create {so_file}")
 
 
 extensions = [
@@ -51,5 +52,5 @@ extensions = [
 
 setup(
     ext_modules=cythonize(extensions, language_level="3"),
-    cmdclass={"build_ext": CustomBuildExt},
+    cmdclass={"build_py": CustomBuildPy},
 )
