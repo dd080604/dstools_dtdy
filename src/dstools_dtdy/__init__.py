@@ -15,7 +15,7 @@ from .ridge_regression import (
     coef_ridge,
     predict_ridge,
     cvridge,
-    plot_cvridge
+    plot_cvridge,
 )
 
 __all__ = [
