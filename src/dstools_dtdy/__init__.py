@@ -8,8 +8,8 @@ from .linear_model import (
     cv_mylm,
 )
 
-from .qr_wrapper import householder_qr
-from .qr_ols import my_lm_QR
+#from .qr_wrapper import householder_qr
+#from .qr_ols import my_lm_QR
 from .ridge_regression import (
     ridge,
     coef_ridge,
