@@ -16,7 +16,6 @@ class CustomBuildExt(build_ext):
         root = os.path.abspath(os.path.dirname(__file__))
         src_dir = os.path.join(root, "src", "dstools_dtdy")
         c_file = os.path.join(src_dir, "qr.c")
-        so_file = os.path.join(src_dir, "qr.so")
 
         if not os.path.exists(c_file):
             raise FileNotFoundError(f"Could not find {c_file}")
@@ -27,16 +26,12 @@ class CustomBuildExt(build_ext):
             "-fPIC",
             "-O2",
             "-o",
-            so_file,
             c_file,
         ]
 
         print("Building qr.so with command:")
         print(" ".join(cmd))
         subprocess.check_call(cmd)
-
-        if not os.path.exists(so_file):
-            raise RuntimeError(f"Failed to create {so_file}")
 
 
 extensions = [
