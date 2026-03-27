@@ -8,7 +8,8 @@ def ridge(X, y, lamb, standardize=True):
     X = scaler.transform(X)
     my = np.mean(y)
     y -= my
-      
+    
+  n,p = X.shape   
   u, d, vt = np.linalg.svd(X, full_matrices=True)
   m = sum(d > 0)
   d = d[range(m)]
