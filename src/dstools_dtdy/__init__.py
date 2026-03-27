@@ -10,6 +10,13 @@ from .linear_model import (
 
 from .qr_wrapper import householder_qr
 from .qr_ols import my_lm_QR
+from .ridge_regression import (
+    ridge,
+    coef_ridge,
+    predict_ridge,
+    cvridge,
+    plot_cvridge
+)
 
 __all__ = [
     "LinearModelFit",
@@ -21,4 +28,9 @@ __all__ = [
     "cv_mylm",
     "householder_qr",
     "my_lm_QR",
+    "ridge",
+    "coef_ridge",
+    "predict_ridge",
+    "cvridge",
+    "plot_cvridge",
 ]
