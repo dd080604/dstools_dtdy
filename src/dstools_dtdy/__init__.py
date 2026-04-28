@@ -17,6 +17,7 @@ from .ridge_regression import (
     cvridge,
     plot_cvridge,
 )
+from .aenet import aenet, cvaenet
 
 __all__ = [
     "LinearModelFit",
@@ -33,4 +34,6 @@ __all__ = [
     "predict_ridge",
     "cvridge",
     "plot_cvridge",
+    "aenet",
+    "cvaenet",
 ]
