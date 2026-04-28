@@ -7,7 +7,7 @@ def ridge(X, y, lamb, standardize=True):
     scaler = StandardScaler().fit(X)
     X = scaler.transform(X)
     my = np.mean(y)
-    y -= my
+    y = y - my   # copy, not in-place, so caller's array is never mutated
     
   n,p = X.shape   
   u, d, vt = np.linalg.svd(X, full_matrices=True)
